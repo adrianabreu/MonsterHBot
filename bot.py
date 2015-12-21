@@ -11,7 +11,7 @@ import telebot # Librería de la API del bot.
 from telebot import types # Tipos para la API del bot.
 import time # Librería para hacer que el programa que controla el bot no se acabe.
 
-f = open('/home/ubuntu/workspace/mhbot/token.id', 'r')
+f = open('/home/ubuntu/workspace/token.id', 'r')
 TOKEN=f.read()
 #TOKEN =  # Nuestro tokken del bot (el que @BotFather nos dió).
  
