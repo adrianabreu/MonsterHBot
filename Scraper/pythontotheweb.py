@@ -5,7 +5,7 @@ import requests
 import re
 import json
 
-url = "http://kiranico.com/es/mh4u/monstruo/"
+url = "http://kiranico.com/es/mh4u/monstruo/kirin"
 
 # Realizamos la petición a la web
 req = requests.get(url)
@@ -14,18 +14,17 @@ req = requests.get(url)
 statusCode = req.status_code
 if statusCode == 200:
 
-    # Pasamos el contenido HTML de la web a un objeto BeautifulSoup()
     html = BeautifulSoup(req.text)
 
     # Obtenemos todos los divs donde estan las entradas
     script = html.find_all('script',{'class':''})
 
     # Recorremos todas las entradas para extraer el título, autor y fecha
-    fire=''
-    ice=''
-    thunder=''
-    water=''
-    dragon=''
+    fire="Resistencia fuego: "
+    water="Resistencia agua: "
+    thunder="Resistencia trueno: "
+    ice="Resistencia hielo: "
+    dragon="Resistencia dragon: "
     for i,entradas in enumerate(script):
         if i == 5:
             #print entradas
@@ -55,10 +54,12 @@ if statusCode == 200:
             
     hp = "HP " + str(values).split(',')[1].split(':')[1]
     print hp
-    print "Resistencia fuego: " + fire
-    print "Resistencia trueno: " + thunder
-    print "Resistencia agua: " + water
-    print "Resistencia hielo: " + ice
-    print "Resistencia dragon: " + dragon
+    print fire
+    print thunder
+    print water
+    print ice
+    print dragon
+    result = hp + ('\n') + fire + ('\n') + water + ('\n') + thunder + ('\n') + ice + ('\n') + dragon 
 else:
     print "Status Code %d" %statusCode
+    result = "No he encontrado a ese monstruo :C"
