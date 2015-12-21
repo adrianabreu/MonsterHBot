@@ -36,12 +36,31 @@ bot.set_update_listener(listener) # Así, le decimos al bot que utilice como fun
 def command_debilidades(m): # Definimos una función que resuelva lo que necesitemos.
     url = "http://kiranico.com/es/mh4u/monstruo/"
     #print str(m.text).split(' ')[1]
-    url += str(m.text).split(' ')[1]
+    ##Parse string
+    a = len(str(m.text).split(' '))
+    if a == 3:
+       b = str(m.text).split(' ')
+       for i in b:
+           i=i.lower()
+       del b[0]
+       print b
+       c = ('-').join(b)
+       url += c
+       req = requests.get(url)
+       statusCode = req.status_code
+    elif a == 2:
+       url += str(m.text).split(' ')[1].lower()
+       req = requests.get(url)
+       statusCode = req.status_code
+    else:
+        statusCode=500
+    #url += len(str(m.text).split(' ')[1]
+    #url += str(m.text).split(' ')[1]
     # Realizamos la petición a la web
-    req = requests.get(url)
+    
     
     # Comprobamos que la petición nos devuelve un Status Code = 200
-    statusCode = req.status_code
+    
     if statusCode == 200:
     
         # Pasamos el contenido HTML de la web a un objeto BeautifulSoup()
