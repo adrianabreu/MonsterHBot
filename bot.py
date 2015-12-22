@@ -148,7 +148,9 @@ def command_recompensa(m): # Definimos una función que resuleva lo que necesite
     
     
     # Comprobamos que la petición nos devuelve un Status Code = 200
-    
+    result=''
+    result2=''
+    result3=''
     if statusCode == 200:
     
         # Pasamos el contenido HTML de la web a un objeto BeautifulSoup()
@@ -200,9 +202,12 @@ def command_recompensa(m): # Definimos una función que resuleva lo que necesite
         print "Status Code %d" %statusCode
         result = "No he encontrado a ese monstruo :C"
     cid = m.chat.id
-    bot.send_message(cid, result)
-    bot.send_message(cid, result2)
-    bot.send_message(cid, result3)
+    if(result2=='' and result3==''):
+        bot.send_message(cid, result)
+    else:
+        bot.send_message(cid, result)
+        bot.send_message(cid, result2)
+        bot.send_message(cid, result3)
 #############################################
 #Peticiones
 bot.polling(none_stop=True) # Con esto, le decimos al bot que siga funcionando incluso si encuentra algún fallo.
