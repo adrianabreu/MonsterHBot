@@ -13,6 +13,7 @@ If you want to use it add it to a group on @MonsterHBot and type /debilidades mo
 It will print the weakness of that monster
 
 ##To Do:
-  1. Give format to wekaness
-  2. Look for armor sets
+  1. Look for armor sets
   2. More control errors
+  3. When mk is ready, use it
+  4. 
