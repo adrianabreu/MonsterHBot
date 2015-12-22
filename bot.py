@@ -10,6 +10,7 @@ import json
 import telebot # Librería de la API del bot.
 from telebot import types # Tipos para la API del bot.
 import time # Librería para hacer que el programa que controla el bot no se acabe.
+from operator import itemgetter
 
 f = open('/home/ubuntu/workspace/token.id', 'r')
 TOKEN=f.read()
@@ -83,6 +84,33 @@ def format_string(string):
     result+='\n'
     return result
     
+def findallweakness (j):
+    parts = j["monster"]["monsterbodyparts"]
+    result = "Fire | Ice | Thunder | Water | Dragon \n"
+    for i in parts:
+        result += (i["local_name"] + " " + i["pivot"]["res_fire"] + " " + i["pivot"]["res_ice"] + " " + i["pivot"]["res_thunder"] + " " + i["pivot"]["res_water"] + " " + i["pivot"]["res_dragon"])
+        result += "\n"    
+    return result
+
+def findhighweakness (j):
+    parts = j["monster"]["monsterbodyparts"]
+    result = ""
+    a={'Fire':0,'Ice':0,'Thunder':0,'Water':0,'Dragon':0}
+    usedparts=[]
+    for i in parts:
+        if (int(i["pivot"]["monsterbodypart_id"])) not in usedparts:
+            a['Fire']+=int(i["pivot"]["res_fire"])
+            a['Ice']+=int(i["pivot"]["res_ice"])
+            a['Thunder']+=int(i["pivot"]["res_thunder"])
+            a['Water']+=int(i["pivot"]["res_water"])
+            a['Dragon']+=int(i["pivot"]["res_dragon"])
+            usedparts.append(int(i["pivot"]["monsterbodypart_id"]))
+    sortdict = sorted(a.items(), key=itemgetter(1),reverse=True)
+    print sortdict
+    for w in sortdict:
+        result += (str(w).split('\'')[1] + ' (' + str(w).split('\'')[2].split(' ')[1] + ' \n' )
+    result += '\n'
+    return result    
 @bot.message_handler(commands=['debilidades']) # Indicamos que lo siguiente va a controlar el comando '/roto2'.
 def command_debilidades(m): # Definimos una función que resuelva lo que necesitemos.
     url = "http://kiranico.com/es/mh4u/monstruo/"
@@ -131,12 +159,8 @@ def command_debilidades(m): # Definimos una función que resuelva lo que necesit
                 #print entradas
                 values = re.findall(r'var.*?=\s*(.*?);', str(entradas), re.DOTALL | re.MULTILINE)
                 j = json.loads(values[0])
-                parts = j["monster"]["monsterbodyparts"]
-                result = "Fire | Ice | Thunder | Water | Dragon \n"
-                for i in parts:
-                    result += (i["local_name"] + " " + i["pivot"]["res_fire"] + " " + i["pivot"]["res_ice"] + " " + i["pivot"]["res_thunder"] + " " + i["pivot"]["res_water"] + " " + i["pivot"]["res_dragon"])
-                    result += "\n"
-        result = format_string(result)  
+                result = findhighweakness(j)
+        #result = format_string(result)  
         #print "Items"
         #parts = j["monster"]["items"]
         #for i in parts:
