@@ -37,7 +37,7 @@ def split_len(seq, length):
     return [seq[i:i+length] for i in range(0, len(seq), length)]
 
 def format_string(string):
-    result='```\n'
+    result=''
     d = string.split('\n')
     a = d
     d = d[0]
@@ -49,21 +49,38 @@ def format_string(string):
     for i in a:
         b.append(re.split(r'\ [0-9]',i)[0])
     bigger=''
-    print b
+    #Remove duplicates
+    c = []
+    for i in b:
+        if i not in c:
+            c.append(i)
+    b = c
     for j in b:
         if len(j) > len(bigger):
             bigger = j
     for i in range(len(bigger)):
-        result +='+'
-        
+        result +='\ '
+
+    for j in b:
+        if j != '':
+            print "Iterating over: " + j 
+            if len(j) < len(bigger):
+                for m,k in enumerate(a):
+                    if j in k:
+                        l=j
+                        print len(bigger)-len(j)
+                        for i in range(len(bigger)-len(j)):
+                            l+='\ '
+                        print "Original k: " + k
+                        k=k.replace(j,l)
+                        a.pop(m)
+                        a.insert(m,k)
+                        print "J:" + j + "\nL: " + l + "\nK: " + k
     result += d
-    firstime = True
     for i in a:
-        if (not(firstime)):
             result+='\n'
             result+=i
-        firstime=False
-    result+='\n```'
+    result+='\n'
     return result
     
 @bot.message_handler(commands=['debilidades']) # Indicamos que lo siguiente va a controlar el comando '/roto2'.
