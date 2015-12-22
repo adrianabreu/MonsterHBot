@@ -8,12 +8,19 @@ the kiranico web where I extract the whole information.
 Kiranico stores the data in a json variable, so I parsed it on python and I extrac the info I need.
 
 #Telegram Bot
-A telegram bot is a powerful application.
-If you want to use it add it to a group on @MonsterHBot and type /debilidades monstername
+A telegram bot is a powerful option. This is based on telebot (python) api.
+If you want to use it add it to a group on @MonsterHBot 
+
+#Usage 
+Type /debilidades monstername
 It will print the weakness of that monster
+If you want to look for rewards type /recompensa monstername
+It will send you the rewards of the monster
+
+If no given name it will show error.
+If kiranico goes down the bot will announce it.If
 
 ##To Do:
   1. Look for armor sets
   2. More control errors
-  3. When mk is ready, use it
-  4. 
+  3. When md is ready, use it to format output
