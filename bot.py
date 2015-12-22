@@ -37,21 +37,33 @@ def split_len(seq, length):
     return [seq[i:i+length] for i in range(0, len(seq), length)]
 
 def format_string(string):
-    a = string.split('\n')
-    b = []
-    result = ''
+    result='```\n'
+    d = string.split('\n')
+    a = d
+    d = d[0]
+    print d
+    del a[0]
+    print d
     print a
+    b = []
     for i in a:
-        b.append(i.split(' ')[0])
+        b.append(re.split(r'\ [0-9]',i)[0])
     bigger=''
+    print b
     for j in b:
         if len(j) > len(bigger):
             bigger = j
     for i in range(len(bigger)):
-        result +='_'
+        result +='+'
         
-    result += a[0]
-    
+    result += d
+    firstime = True
+    for i in a:
+        if (not(firstime)):
+            result+='\n'
+            result+=i
+        firstime=False
+    result+='\n```'
     return result
     
 @bot.message_handler(commands=['debilidades']) # Indicamos que lo siguiente va a controlar el comando '/roto2'.
@@ -115,7 +127,10 @@ def command_debilidades(m): # Definimos una función que resuelva lo que necesit
         #result = hp + ('\n') + fire + ('\n') + water + ('\n') + thunder + ('\n') + ice + ('\n') + dragon 
     else:
         print "Status Code %d" %statusCode
-        result = "No he encontrado a ese monstruo :C"
+        if statusCode == 502 or statusCode == 404:
+            result= "Se ha caido la web"
+        else:
+            result = "No he encontrado a ese monstruo :C"
     
     cid = m.chat.id
     bot.send_message(cid, result)
