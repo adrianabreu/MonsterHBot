@@ -14,14 +14,13 @@ from operator import itemgetter
 
 f = open('/home/ubuntu/workspace/token.id', 'r')
 TOKEN=f.read()
-#TOKEN =  # Nuestro tokken del bot (el que @BotFather nos dió).
  
-bot = telebot.TeleBot(TOKEN) # Creamos el objeto de nuestro bot.
+bot = telebot.TeleBot(TOKEN) # Creamos el objeto de nuestro bot. El token se encapsula fuera.
  
 def listener(messages):
     for m in messages:
         cid = m.chat.id
-        if m.content_type == 'text': # Sólo saldrá en el log los mensajes tipo texto
+        if m.content_type == 'text':
             if cid > 0:
                 mensaje = str(m.chat.first_name) + " [" + str(cid) + "]: " + m.text
             else:
@@ -32,57 +31,9 @@ def listener(messages):
             print mensaje
             
 bot.set_update_listener(listener) # Así, le decimos al bot que utilice como función escuchadora nuestra función 'listener' declarada arriba.
+
 #############################################
-#Funciones
-def split_len(seq, length):
-    return [seq[i:i+length] for i in range(0, len(seq), length)]
-
-def format_string(string):
-    result=''
-    d = string.split('\n')
-    a = d
-    d = d[0]
-    print d
-    del a[0]
-    print d
-    print a
-    b = []
-    for i in a:
-        b.append(re.split(r'\ [0-9]',i)[0])
-    bigger=''
-    #Remove duplicates
-    c = []
-    for i in b:
-        if i not in c:
-            c.append(i)
-    b = c
-    for j in b:
-        if len(j) > len(bigger):
-            bigger = j
-    for i in range(len(bigger)):
-        result +='\ '
-
-    for j in b:
-        if j != '':
-            print "Iterating over: " + j 
-            if len(j) < len(bigger):
-                for m,k in enumerate(a):
-                    if j in k:
-                        l=j
-                        print len(bigger)-len(j)
-                        for i in range(len(bigger)-len(j)):
-                            l+='\ '
-                        print "Original k: " + k
-                        k=k.replace(j,l)
-                        a.pop(m)
-                        a.insert(m,k)
-                        print "J:" + j + "\nL: " + l + "\nK: " + k
-    result += d
-    for i in a:
-            result+='\n'
-            result+=i
-    result+='\n'
-    return result
+#Funciones 
     
 def findallweakness (j):
     parts = j["monster"]["monsterbodyparts"]
@@ -93,10 +44,12 @@ def findallweakness (j):
     return result
 
 def findhighweakness (j):
+
     parts = j["monster"]["monsterbodyparts"]
     result = ""
     a={'Fire':0,'Ice':0,'Thunder':0,'Water':0,'Dragon':0}
     usedparts=[]
+    
     for i in parts:
         if (int(i["pivot"]["monsterbodypart_id"])) not in usedparts:
             a['Fire']+=int(i["pivot"]["res_fire"])
@@ -106,16 +59,19 @@ def findhighweakness (j):
             a['Dragon']+=int(i["pivot"]["res_dragon"])
             usedparts.append(int(i["pivot"]["monsterbodypart_id"]))
     sortdict = sorted(a.items(), key=itemgetter(1),reverse=True)
-    print sortdict
+
     for w in sortdict:
         result += (str(w).split('\'')[1] + ' (' + str(w).split('\'')[2].split(' ')[1] + ' \n' )
+    
     result += '\n'
-    return result    
+    
+    return result
+    
+    
 @bot.message_handler(commands=['debilidades']) # Indicamos que lo siguiente va a controlar el comando '/roto2'.
 def command_debilidades(m): # Definimos una función que resuelva lo que necesitemos.
     url = "http://kiranico.com/es/mh4u/monstruo/"
-    #print str(m.text).split(' ')[1]
-    ##Parse string
+
     a = len(str(m.text).split(' '))
     if a == 3:
        b = str(m.text).split(' ')
@@ -133,39 +89,22 @@ def command_debilidades(m): # Definimos una función que resuelva lo que necesit
        statusCode = req.status_code
     else:
         statusCode=500
-    #url += len(str(m.text).split(' ')[1]
-    #url += str(m.text).split(' ')[1]
-    # Realizamos la petición a la web
-    
-    
-    # Comprobamos que la petición nos devuelve un Status Code = 200
     
     if statusCode == 200:
-    
-        # Pasamos el contenido HTML de la web a un objeto BeautifulSoup()
+
         html = BeautifulSoup(req.text)
-    
-        # Obtenemos todos los divs donde estan las entradas
+
         script = html.find_all('script',{'class':''})
     
-        # Recorremos todas las entradas para extraer el título, autor y fecha
-        fire="Resistencia fuego: "
-        water="Resistencia agua: "
-        thunder="Resistencia trueno: "
-        ice="Resistencia hielo: "
-        dragon="Resistencia dragon: "
         for i,entradas in enumerate(script):
             if i == 5:
                 #print entradas
                 values = re.findall(r'var.*?=\s*(.*?);', str(entradas), re.DOTALL | re.MULTILINE)
                 j = json.loads(values[0])
+                
+                #Until md is not implemented we will conform with an ordered list
                 result = findhighweakness(j)
-        #result = format_string(result)  
-        #print "Items"
-        #parts = j["monster"]["items"]
-        #for i in parts:
-        #    print i["local_name"] + "  Rango " + i["pivot"]["rank"]["local_name"] + " " + i["pivot"]["monsteritemmethod"]["local_name"] + " " + i["pivot"]["percentage"] + "%"
-        #result = hp + ('\n') + fire + ('\n') + water + ('\n') + thunder + ('\n') + ice + ('\n') + dragon 
+
     else:
         print "Status Code %d" %statusCode
         if statusCode == 502 or statusCode == 404:
@@ -179,8 +118,8 @@ def command_debilidades(m): # Definimos una función que resuelva lo que necesit
 @bot.message_handler(commands=['recompensa']) # Indicamos que lo siguiente va a controlar el comando '/miramacho'
 def command_recompensa(m): # Definimos una función que resuleva lo que necesitemos.
     url = "http://kiranico.com/es/mh4u/monstruo/"
-    #print str(m.text).split(' ')[1]
-    ##Parse string
+
+    ## Buscamos al monstruo 
     a = len(str(m.text).split(' '))
     if a == 3:
        b = str(m.text).split(' ')
@@ -203,7 +142,7 @@ def command_recompensa(m): # Definimos una función que resuleva lo que necesite
     # Realizamos la petición a la web
     
     
-    # Comprobamos que la petición nos devuelve un Status Code = 200
+    # Comprobamos que la petición nos devuelve un Status Code = 200, es decir, pagina ok
     result=''
     result2=''
     result3=''
@@ -212,24 +151,22 @@ def command_recompensa(m): # Definimos una función que resuleva lo que necesite
         # Pasamos el contenido HTML de la web a un objeto BeautifulSoup()
         html = BeautifulSoup(req.text)
     
-        # Obtenemos todos los divs donde estan las entradas
+        # Buscamos todos los tags de script en la pagina de kiranico
         script = html.find_all('script',{'class':''})
     
-        # Recorremos todas las entradas para extraer el título, autor y fecha
-        fire="Resistencia fuego: "
-        water="Resistencia agua: "
-        thunder="Resistencia trueno: "
-        ice="Resistencia hielo: "
-        dragon="Resistencia dragon: "
+    
+        #El numero 5 tiene el contenido en json
         for i,entradas in enumerate(script):
             if i == 5:
-                #print entradas
+                #Extraemos con esta regexp la variable json y la parseamos
                 values = re.findall(r'var.*?=\s*(.*?);', str(entradas), re.DOTALL | re.MULTILINE)
                 j = json.loads(values[0])
                 parts = j["monster"]["monsterbodyparts"]
+                
                 result = "RANGO BAJO\n"
                 result2 = "RANGO ALTO\n"
                 result3 = "RANGO G\n"
+                
                 parts = j["monster"]["items"]
                 firstime = True
                 jold=''
@@ -264,6 +201,7 @@ def command_recompensa(m): # Definimos una función que resuleva lo que necesite
         bot.send_message(cid, result)
         bot.send_message(cid, result2)
         bot.send_message(cid, result3)
+        
 #############################################
 #Peticiones
 bot.polling(none_stop=True) # Con esto, le decimos al bot que siga funcionando incluso si encuentra algún fallo.
