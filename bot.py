@@ -71,7 +71,6 @@ def findhighweakness (j):
 @bot.message_handler(commands=['debilidades']) # Indicamos que lo siguiente va a controlar el comando '/roto2'.
 def command_debilidades(m): # Definimos una función que resuelva lo que necesitemos.
     url = "http://kiranico.com/es/mh4u/monstruo/"
-
     a = len(str(m.text).split(' '))
     if a == 3:
        b = str(m.text).split(' ')
@@ -89,10 +88,12 @@ def command_debilidades(m): # Definimos una función que resuelva lo que necesit
        statusCode = req.status_code
     else:
         statusCode=500
+
+
     
     if statusCode == 200:
 
-        html = BeautifulSoup(req.text)
+        html = BeautifulSoup(req.text, "lxml")
 
         script = html.find_all('script',{'class':''})
     
@@ -102,7 +103,7 @@ def command_debilidades(m): # Definimos una función que resuelva lo que necesit
                 values = re.findall(r'var.*?=\s*(.*?);', str(entradas), re.DOTALL | re.MULTILINE)
                 j = json.loads(values[0])
                 
-                #Until md is not implemented we will conform with an ordered list
+                #Until md is not implemented we will conform with 
                 result = findhighweakness(j)
 
     else:
@@ -120,9 +121,16 @@ def command_recompensa(m): # Definimos una función que resuleva lo que necesite
     url = "http://kiranico.com/es/mh4u/monstruo/"
 
     ## Buscamos al monstruo 
+    
     a = len(str(m.text).split(' '))
+    b = str(m.text).split(' ')
+    rango = b[-1].lower()
+    print b
+    print rango
+    if  rango == 'alto' or rango == 'bajo' or rango == 'g':
+        del b[-1]
+    
     if a == 3:
-       b = str(m.text).split(' ')
        for i in b:
            i=i.lower()
        del b[0]
@@ -149,7 +157,7 @@ def command_recompensa(m): # Definimos una función que resuleva lo que necesite
     if statusCode == 200:
     
         # Pasamos el contenido HTML de la web a un objeto BeautifulSoup()
-        html = BeautifulSoup(req.text)
+        html = BeautifulSoup(req.text, "lxml")
     
         # Buscamos todos los tags de script en la pagina de kiranico
         script = html.find_all('script',{'class':''})
@@ -195,13 +203,19 @@ def command_recompensa(m): # Definimos una función que resuleva lo que necesite
         print "Status Code %d" %statusCode
         result = "No he encontrado a ese monstruo :C"
     cid = m.chat.id
-    if(result2=='' and result3==''):
+    if rango == 'bajo':
         bot.send_message(cid, result)
-    else:
-        bot.send_message(cid, result)
+    elif rango == 'alto':
         bot.send_message(cid, result2)
+    elif rango == 'g':
         bot.send_message(cid, result3)
-        
+    else:
+        if(result2=='' and result3==''):
+            bot.send_message(cid, result)
+        else:
+            bot.send_message(cid, result)
+            bot.send_message(cid, result2)
+            bot.send_message(cid, result3)
 #############################################
 #Peticiones
 bot.polling(none_stop=True) # Con esto, le decimos al bot que siga funcionando incluso si encuentra algún fallo.
