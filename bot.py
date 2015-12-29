@@ -130,7 +130,7 @@ def command_recompensa(m): # Definimos una función que resuleva lo que necesite
     if  rango == 'alto' or rango == 'bajo' or rango == 'g':
         del b[-1]
     
-    if a == 3:
+    if len(b) == 3:
        for i in b:
            i=i.lower()
        del b[0]
@@ -139,10 +139,12 @@ def command_recompensa(m): # Definimos una función que resuleva lo que necesite
        url += c
        req = requests.get(url)
        statusCode = req.status_code
-    elif a == 2:
+       print url
+    elif len(b) == 2:
        url += str(m.text).split(' ')[1].lower()
        req = requests.get(url)
        statusCode = req.status_code
+       print url
     else:
         statusCode=500
     #url += len(str(m.text).split(' ')[1]
@@ -199,23 +201,26 @@ def command_recompensa(m): # Definimos una función que resuleva lo que necesite
                         result3 += "\n"
                     firstime=False
                     jold = i["pivot"]["monsteritemmethod"]["local_name"]
+
+        cid = m.chat.id
+        if rango == 'bajo':
+            bot.send_message(cid, result)
+        elif rango == 'alto':
+            bot.send_message(cid, result2)
+        elif rango == 'g':
+            bot.send_message(cid, result3)
+        else:
+            if(result2=='' and result3==''):
+                bot.send_message(cid, result)
+            else:
+                bot.send_message(cid, result)
+                bot.send_message(cid, result2)
+                bot.send_message(cid, result3)
     else:
         print "Status Code %d" %statusCode
         result = "No he encontrado a ese monstruo :C"
-    cid = m.chat.id
-    if rango == 'bajo':
+        cid = m.chat.id
         bot.send_message(cid, result)
-    elif rango == 'alto':
-        bot.send_message(cid, result2)
-    elif rango == 'g':
-        bot.send_message(cid, result3)
-    else:
-        if(result2=='' and result3==''):
-            bot.send_message(cid, result)
-        else:
-            bot.send_message(cid, result)
-            bot.send_message(cid, result2)
-            bot.send_message(cid, result3)
 #############################################
 #Peticiones
 bot.polling(none_stop=True) # Con esto, le decimos al bot que siga funcionando incluso si encuentra algún fallo.
