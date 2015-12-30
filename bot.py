@@ -10,22 +10,8 @@ import json
 from telegram import Updater
 from operator import itemgetter
 
-'''
-def listener(messages):
-    for m in messages:
-        cid = m.chat.id
-        if m.content_type == 'text':
-            if cid > 0:
-                mensaje = str(m.chat.first_name) + " [" + str(cid) + "]: " + m.text
-            else:
-                mensaje = str(m.from_user.first_name) + "[" + str(cid) + "]: " + m.text 
-            f = open('log.txt', 'a')
-            f.write(mensaje + "\n")
-            f.close()
-            print mensaje
-'''            
+        
 #############################################
-#Funciones 
     
 def findallweakness (j):
     parts = j["monster"]["monsterbodyparts"]
@@ -59,8 +45,11 @@ def findhighweakness (j):
     
     return result
     
-    
-def debilidades(bot, update): # Definimos una función que resuelva lo que necesitemos.
+
+
+########################################################################################
+
+def debilidades(bot, update): 
     m = update.message
     url = "http://kiranico.com/es/mh4u/monstruo/"
     a = len(str(m.text).split(' '))
