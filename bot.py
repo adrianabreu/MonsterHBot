@@ -7,16 +7,10 @@ from bs4 import BeautifulSoup
 import requests
 import re
 import json
-import telebot # Librería de la API del bot.
-from telebot import types # Tipos para la API del bot.
-import time # Librería para hacer que el programa que controla el bot no se acabe.
+from telegram import Updater
 from operator import itemgetter
 
-f = open('/home/ubuntu/workspace/token.id', 'r')
-TOKEN=f.read()
- 
-bot = telebot.TeleBot(TOKEN) # Creamos el objeto de nuestro bot. El token se encapsula fuera.
- 
+'''
 def listener(messages):
     for m in messages:
         cid = m.chat.id
@@ -29,9 +23,7 @@ def listener(messages):
             f.write(mensaje + "\n")
             f.close()
             print mensaje
-            
-bot.set_update_listener(listener) # Así, le decimos al bot que utilice como función escuchadora nuestra función 'listener' declarada arriba.
-
+'''            
 #############################################
 #Funciones 
     
@@ -68,8 +60,8 @@ def findhighweakness (j):
     return result
     
     
-@bot.message_handler(commands=['debilidades']) # Indicamos que lo siguiente va a controlar el comando '/roto2'.
-def command_debilidades(m): # Definimos una función que resuelva lo que necesitemos.
+def debilidades(bot, update): # Definimos una función que resuelva lo que necesitemos.
+    m = update.message
     url = "http://kiranico.com/es/mh4u/monstruo/"
     a = len(str(m.text).split(' '))
     if a == 3:
@@ -114,10 +106,10 @@ def command_debilidades(m): # Definimos una función que resuelva lo que necesit
             result = "No he encontrado a ese monstruo :C"
     
     cid = m.chat.id
-    bot.send_message(cid, result)
+    bot.sendMessage(cid, result)
     
-@bot.message_handler(commands=['recompensa']) # Indicamos que lo siguiente va a controlar el comando '/miramacho'
-def command_recompensa(m): # Definimos una función que resuleva lo que necesitemos.
+def recompensa(bot, update): # Definimos una función que resuelva lo que necesitemos.
+    m = update.message
     url = "http://kiranico.com/es/mh4u/monstruo/"
 
     ## Buscamos al monstruo 
@@ -204,23 +196,43 @@ def command_recompensa(m): # Definimos una función que resuleva lo que necesite
 
         cid = m.chat.id
         if rango == 'bajo':
-            bot.send_message(cid, result)
+            bot.sendMessage(cid, result)
         elif rango == 'alto':
-            bot.send_message(cid, result2)
+            bot.sendMessage(cid, result2)
         elif rango == 'g':
-            bot.send_message(cid, result3)
+            bot.sendMessage(cid, result3)
         else:
             if(result2=='' and result3==''):
-                bot.send_message(cid, result)
+                bot.sendMessage(cid, result)
             else:
-                bot.send_message(cid, result)
-                bot.send_message(cid, result2)
-                bot.send_message(cid, result3)
+                bot.sendMessage(cid, result)
+                bot.sendMessage(cid, result2)
+                bot.sendMessage(cid, result3)
     else:
         print "Status Code %d" %statusCode
         result = "No he encontrado a ese monstruo :C"
         cid = m.chat.id
-        bot.send_message(cid, result)
+        bot.sendMessage(cid, result)
 #############################################
-#Peticiones
-bot.polling(none_stop=True) # Con esto, le decimos al bot que siga funcionando incluso si encuentra algún fallo.
+def main():
+    f = open('/home/ubuntu/workspace/token.id', 'r')
+    TOKEN=f.read()
+    # Create the EventHandler and pass it your bot's token.
+    updater = Updater(TOKEN)
+
+    # Get the dispatcher to register handlers
+    dp = updater.dispatcher
+
+    # on different commands - answer in Telegram
+    dp.addTelegramCommandHandler("debilidades", debilidades)
+    dp.addTelegramCommandHandler("recompensa", recompensa)
+
+    # Start the Bot
+    updater.start_polling(timeout=5)
+
+    # Run the bot until the user presses Ctrl-C or the process receives SIGINT,
+    # SIGTERM or SIGABRT
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
