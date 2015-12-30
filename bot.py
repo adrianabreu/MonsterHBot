@@ -213,25 +213,24 @@ def recompensa(bot, update): # Definimos una función que resuelva lo que necesi
         result = "No he encontrado a ese monstruo :C"
         cid = m.chat.id
         bot.sendMessage(cid, result)
-#############################################
+        
+##########################################################################################
+##########################################################################################
+
 def main():
+    #The bot will be identified with a token that we must protect
     f = open('/home/ubuntu/workspace/token.id', 'r')
     TOKEN=f.read()
-    # Create the EventHandler and pass it your bot's token.
+
     updater = Updater(TOKEN)
 
-    # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
-    # on different commands - answer in Telegram
     dp.addTelegramCommandHandler("debilidades", debilidades)
     dp.addTelegramCommandHandler("recompensa", recompensa)
 
-    # Start the Bot
     updater.start_polling(timeout=5)
 
-    # Run the bot until the user presses Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT
     updater.idle()
 
 if __name__ == '__main__':
