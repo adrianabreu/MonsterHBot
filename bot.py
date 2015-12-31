@@ -53,7 +53,7 @@ def debilidades(bot, update):
     m = update.message
     url = "http://kiranico.com/es/mh4u/monstruo/"
     a = len(str(m.text).split(' '))
-    if a == 3:
+    if a > 2:
        b = str(m.text).split(' ')
        for i in b:
            i=i.lower()
@@ -111,7 +111,7 @@ def recompensa(bot, update): # Definimos una función que resuelva lo que necesi
     if  rango == 'alto' or rango == 'bajo' or rango == 'g':
         del b[-1]
     
-    if len(b) == 3:
+    if len(b) > 2:
        for i in b:
            i=i.lower()
        del b[0]
