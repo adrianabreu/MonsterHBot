@@ -32,8 +32,11 @@ var monster = (function() {
             }
         });
 
-        Object.keys(weakness_json).map(function(a_weakness) {
-            result += a_weakness + ' : ' + weakness_json[a_weakness] + '\n';
+        var keysSorted = Object.keys(weakness_json).sort(function(a, b){
+            return weakness_json[b] - weakness_json[a];
+        }).map(function(a_weakness) {
+            result += '*' + a_weakness + '* : ' + weakness_json[a_weakness] +
+                    '\n';
         });
 
         result += '\n';
@@ -63,16 +66,16 @@ var monster = (function() {
         var jold='';
 
         parts.map(function(i){
-            jnew = i['pivot']['monsteritemmethod']['local_name']
+            jnew = i['pivot']['monsteritemmethod']['local_name'];
 
             if (i['pivot']['rank']['local_name'] == 'Bajo') {
                 if (jnew != jold && !firstime)
                    message.bajo += '======================================='
                                     + '===========\n';
 
-               message.bajo += (i['local_name'] + ' ' 
+               message.bajo += ('*' + i['local_name'] + '* ' 
                 + i['pivot']['monsteritemmethod']['local_name'] 
-                + ' ' + i['pivot']['percentage'] + '%');
+                + ' *' + i['pivot']['percentage'] + '%*');
 
                message.bajo += '\n';
             }
@@ -82,9 +85,9 @@ var monster = (function() {
                     message.alto += '====================================='
                                         + '=============\n';
 
-                message.alto += (i['local_name']+ ' ' 
-                    + i['pivot']['monsteritemmethod']['local_name'] + ' ' 
-                    + i['pivot']['percentage'] + '%');
+                message.alto += ('*' + i['local_name']+ '* ' 
+                    + i['pivot']['monsteritemmethod']['local_name'] + ' *' 
+                    + i['pivot']['percentage'] + '%*');
 
                 message.alto += '\n';
             }
@@ -94,9 +97,9 @@ var monster = (function() {
                     message.g += '========================================'
                                     + '==========\n';
 
-                message.g += (i['local_name'] + ' ' 
+                message.g += ('*' + i['local_name'] + '* ' 
                     + i['pivot']['monsteritemmethod']['local_name'] 
-                    + ' ' + i['pivot']['percentage'] + '%');
+                    + ' *' + i['pivot']['percentage'] + '%*');
 
                 message.g += '\n';
             }
@@ -143,7 +146,6 @@ var monster = (function() {
                     sender_function(fromId, message[rank], options);    
                 });
             }
-
         } else {
             sender_function(fromId, message, options);  
         }
